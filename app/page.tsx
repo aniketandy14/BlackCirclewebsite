@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  formatBytes,
-  formatDate,
-  getLatestBuild,
-  ITCH_URL,
-} from "@/lib/blob";
+import { formatBytes, formatDate, getLatestBuild } from "@/lib/blob";
 
 const YOUTUBE_ID = "YHYQ45dUZjo";
 
@@ -21,7 +16,7 @@ export default async function Home() {
 
       <main>
         <Hero build={build} />
-        <Trailer />
+        <Gameplay />
         <Product />
         <Experience />
         <Differentiation />
@@ -228,25 +223,16 @@ function Hero({ build }: { build: BuildInfoProp }) {
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <DownloadButton build={build} />
               <a
-                href="#trailer"
+                href="#gameplay"
                 className="inline-flex items-center gap-2 rounded-lg border border-edge px-6 py-3.5 text-sm font-semibold transition hover:border-blood"
               >
-                Watch the trailer
+                Watch gameplay
               </a>
             </div>
 
             {build ? (
               <p className="mt-5 text-xs text-dim">
                 {build.filename} &middot; updated {formatDate(build.uploadedAt)}
-                {" · "}
-                <a
-                  href={ITCH_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-4 transition hover:text-ash"
-                >
-                  also on itch.io
-                </a>
               </p>
             ) : (
               <p className="mt-5 text-xs text-dim">
@@ -264,12 +250,12 @@ function Hero({ build }: { build: BuildInfoProp }) {
   );
 }
 
-function Trailer() {
+function Gameplay() {
   return (
-    <section id="trailer" className="border-t border-edge">
+    <section id="gameplay" className="border-t border-edge">
       <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blood">
-          Trailer
+          Gameplay
         </p>
         <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
           See it running.
@@ -495,16 +481,8 @@ function Prototype({ build }: { build: BuildInfoProp }) {
             playable prototype.
           </p>
 
-          <div className="mt-6 flex flex-col gap-3">
-            <DownloadButton build={build} className="justify-center" />
-            <a
-              href={ITCH_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-edge px-6 py-3.5 text-sm font-semibold transition hover:border-blood"
-            >
-              View on itch.io
-            </a>
+          <div className="mt-6">
+            <DownloadButton build={build} className="w-full justify-center" />
           </div>
         </div>
       </div>
@@ -682,12 +660,10 @@ function DownloadCta({ build }: { build: BuildInfoProp }) {
         <div className="mt-10 flex flex-wrap justify-center gap-3">
           <DownloadButton build={build} />
           <a
-            href={ITCH_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#gameplay"
             className="inline-flex items-center gap-2 rounded-lg border border-edge px-6 py-3.5 text-sm font-semibold transition hover:border-blood"
           >
-            Play on itch.io
+            Watch gameplay
           </a>
         </div>
 
@@ -713,20 +689,12 @@ function Footer() {
 
         <div className="flex items-center gap-6">
           <a
-            href={ITCH_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition hover:text-ash"
-          >
-            itch.io
-          </a>
-          <a
             href={"https://www.youtube.com/watch?v=" + YOUTUBE_ID}
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:text-ash"
           >
-            Trailer
+            Gameplay
           </a>
           <Link href="/admin" className="transition hover:text-ash">
             Admin

@@ -220,8 +220,8 @@ export default function AdminPage() {
 
       {builds.length === 0 ? (
         <p className="mt-4 text-sm text-dim">
-          Nothing uploaded yet. The download button points to itch.io until you
-          add a build.
+          Nothing uploaded yet. The download button on the site stays inactive
+          until you add a build.
         </p>
       ) : (
         <ul className="mt-4 divide-y divide-edge rounded-xl border border-edge">

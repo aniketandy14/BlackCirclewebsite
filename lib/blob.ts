@@ -3,8 +3,6 @@ import { list } from "@vercel/blob";
 /** All uploaded builds live under this prefix so the store stays tidy. */
 export const BUILD_PREFIX = "builds/";
 
-export const ITCH_URL = "https://aniketandy14.itch.io/black-circle";
-
 export type BuildInfo = {
   url: string;
   downloadUrl: string;

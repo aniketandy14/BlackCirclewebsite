@@ -4,13 +4,11 @@ Marketing and pitch site for **Black Circle**, an open-world crime thriller by
 Aniket Shintre. Next.js 15 (App Router) + TypeScript + Tailwind CSS v4,
 deployed on Vercel.
 
-Live prototype: https://aniketandy14.itch.io/black-circle
-
 ## What is here
 
 | Route              | What it does                                              |
 | ------------------ | --------------------------------------------------------- |
-| `/`                | The pitch site — product, market, roadmap, trailer, download |
+| `/`                | The pitch site — product, gameplay, roadmap, download        |
 | `/admin`           | Password-protected page for uploading the downloadable zip  |
 | `/api/download`    | Stable public link that redirects to the newest build       |
 | `/api/blob/upload` | Issues client-upload tokens (checks the admin password)     |
