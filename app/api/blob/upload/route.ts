@@ -26,16 +26,16 @@ export async function POST(request: Request): Promise<NextResponse> {
         if (!pathname.startsWith(BUILD_PREFIX)) {
           throw new Error("Uploads are only allowed under the builds/ prefix.");
         }
+        if (!process.env.BLOB_READ_WRITE_TOKEN) {
+          throw new Error(
+            "BLOB_READ_WRITE_TOKEN is missing. Connect a Blob store to this project and redeploy.",
+          );
+        }
 
+        // Deliberately no allowedContentTypes: browsers label .zip
+        // inconsistently (application/zip, application/x-zip-compressed,
+        // octet-stream, or empty), and the password above is the real gate.
         return {
-          // Browsers label .zip inconsistently across platforms, so accept the
-          // handful of types they actually send.
-          allowedContentTypes: [
-            "application/zip",
-            "application/x-zip-compressed",
-            "application/octet-stream",
-            "multipart/x-zip",
-          ],
           // Keeps older builds intact; the newest upload becomes the live one.
           addRandomSuffix: true,
           maximumSizeInBytes: MAX_UPLOAD_BYTES,

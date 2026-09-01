@@ -20,6 +20,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [unlocked, setUnlocked] = useState(false);
   const [builds, setBuilds] = useState<BuildInfo[]>([]);
+  const [blobConfigured, setBlobConfigured] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -31,8 +32,12 @@ export default function AdminPage() {
       cache: "no-store",
     });
     if (!response.ok) throw new Error("Wrong password.");
-    const data = (await response.json()) as { builds: BuildInfo[] };
+    const data = (await response.json()) as {
+      builds: BuildInfo[];
+      blobConfigured: boolean;
+    };
     setBuilds(data.builds);
+    setBlobConfigured(data.blobConfigured);
   }, []);
 
   async function handleUnlock(event: React.FormEvent) {
@@ -68,7 +73,7 @@ export default function AdminPage() {
       setStatus({ kind: "done", filename: file.name });
       await loadBuilds(password);
     } catch (error) {
-      setStatus({ kind: "error", message: (error as Error).message });
+      setStatus({ kind: "error", message: explainUploadError(error) });
     }
   }
 
@@ -138,6 +143,23 @@ export default function AdminPage() {
           Back to site
         </Link>
       </div>
+
+      {!blobConfigured ? (
+        <div className="mt-8 rounded-xl border border-blood/40 bg-blood/5 p-5">
+          <p className="text-sm font-semibold text-blood">
+            Blob storage is not connected
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ash">
+            Uploads will fail until this deployment can see a Blob store. In
+            Vercel: <strong className="text-chalk">Storage</strong> &rarr;{" "}
+            <strong className="text-chalk">Create Database</strong> &rarr;{" "}
+            <strong className="text-chalk">Blob</strong>, connect it to this
+            project, then redeploy so{" "}
+            <code className="text-chalk">BLOB_READ_WRITE_TOKEN</code> reaches
+            the running build.
+          </p>
+        </div>
+      ) : null}
 
       <div
         onDragOver={(event) => {
@@ -256,6 +278,25 @@ export default function AdminPage() {
       )}
     </main>
   );
+}
+
+/**
+ * The Blob SDK throws a bare "Failed to retrieve the client token" for every
+ * non-2xx from our token route and discards the body, so translate it into
+ * something a human can act on.
+ */
+function explainUploadError(error: unknown): string {
+  const message = (error as Error).message ?? "Upload failed.";
+
+  if (message.toLowerCase().includes("client token")) {
+    return (
+      "Could not start the upload. This almost always means the Blob store " +
+      "is not connected to this deployment: create one under Storage, then " +
+      "redeploy so BLOB_READ_WRITE_TOKEN reaches the running build."
+    );
+  }
+
+  return message;
 }
 
 function Ring({ className }: { className?: string }) {

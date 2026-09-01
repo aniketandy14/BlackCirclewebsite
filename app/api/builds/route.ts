@@ -15,7 +15,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return NextResponse.json({ builds: await getBuilds() });
+  // blobConfigured lets the admin page warn about a missing Blob store up
+  // front, rather than after an upload fails with an opaque SDK error.
+  return NextResponse.json({
+    builds: await getBuilds(),
+    blobConfigured: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+  });
 }
 
 export async function DELETE(request: Request) {
