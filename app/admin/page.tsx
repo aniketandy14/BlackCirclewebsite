@@ -20,7 +20,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [unlocked, setUnlocked] = useState(false);
   const [builds, setBuilds] = useState<BuildInfo[]>([]);
-  const [blobConfigured, setBlobConfigured] = useState(true);
+  const [uploadsConfigured, setUploadsConfigured] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -34,10 +34,10 @@ export default function AdminPage() {
     if (!response.ok) throw new Error("Wrong password.");
     const data = (await response.json()) as {
       builds: BuildInfo[];
-      blobConfigured: boolean;
+      uploadsConfigured: boolean;
     };
     setBuilds(data.builds);
-    setBlobConfigured(data.blobConfigured);
+    setUploadsConfigured(data.uploadsConfigured);
   }, []);
 
   async function handleUnlock(event: React.FormEvent) {
@@ -144,19 +144,25 @@ export default function AdminPage() {
         </Link>
       </div>
 
-      {!blobConfigured ? (
+      {!uploadsConfigured ? (
         <div className="mt-8 rounded-xl border border-blood/40 bg-blood/5 p-5">
           <p className="text-sm font-semibold text-blood">
-            Blob storage is not connected
+            Browser uploads need a read-write token
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ash">
-            Uploads will fail until this deployment can see a Blob store. In
-            Vercel: <strong className="text-chalk">Storage</strong> &rarr;{" "}
-            <strong className="text-chalk">Create Database</strong> &rarr;{" "}
-            <strong className="text-chalk">Blob</strong>, connect it to this
-            project, then redeploy so{" "}
-            <code className="text-chalk">BLOB_READ_WRITE_TOKEN</code> reaches
-            the running build.
+            The store is reachable, but it is connected over OIDC
+            (<code className="text-chalk">BLOB_STORE_ID</code> +{" "}
+            <code className="text-chalk">VERCEL_OIDC_TOKEN</code>). OIDC covers
+            reads and deletes; issuing a client token for a browser upload is
+            the one operation that requires the long-lived{" "}
+            <code className="text-chalk">BLOB_READ_WRITE_TOKEN</code>.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-ash">
+            Open the Blob store, copy the value beginning{" "}
+            <code className="text-chalk">vercel_blob_rw_</code> from its
+            quickstart snippet, add it as an environment variable named{" "}
+            <code className="text-chalk">BLOB_READ_WRITE_TOKEN</code> in all
+            three environments, then redeploy.
           </p>
         </div>
       ) : null}
@@ -290,9 +296,9 @@ function explainUploadError(error: unknown): string {
 
   if (message.toLowerCase().includes("client token")) {
     return (
-      "Could not start the upload. This almost always means the Blob store " +
-      "is not connected to this deployment: create one under Storage, then " +
-      "redeploy so BLOB_READ_WRITE_TOKEN reaches the running build."
+      "Could not start the upload. The Blob store is connected over OIDC, " +
+      "which cannot mint client tokens for browser uploads. Add a " +
+      "BLOB_READ_WRITE_TOKEN environment variable and redeploy."
     );
   }
 

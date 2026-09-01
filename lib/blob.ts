@@ -30,14 +30,23 @@ function toBuildInfo(blob: {
 }
 
 /**
+ * Whether client (browser) uploads can be issued.
+ *
+ * Reads and deletes authenticate through resolveBlobAuth, which accepts OIDC
+ * (BLOB_STORE_ID + VERCEL_OIDC_TOKEN). Minting a client token for a browser
+ * upload is the one operation that needs the long-lived read-write token.
+ */
+export function canIssueClientTokens(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+/**
  * Every build in the store, newest first.
  *
- * Returns [] rather than throwing when Blob is not configured yet — the site
- * has to render fine on the very first deploy, before the store exists.
+ * Returns [] rather than throwing when Blob is unreachable — the site has to
+ * render fine on the very first deploy, before any store exists.
  */
 export async function getBuilds(): Promise<BuildInfo[]> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
-
   try {
     const { blobs } = await list({ prefix: BUILD_PREFIX });
     return blobs

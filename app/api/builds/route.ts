@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { del } from "@vercel/blob";
-import { BUILD_PREFIX, getBuilds } from "@/lib/blob";
+import { BUILD_PREFIX, canIssueClientTokens, getBuilds } from "@/lib/blob";
 
 export const dynamic = "force-dynamic";
 
@@ -15,11 +15,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // blobConfigured lets the admin page warn about a missing Blob store up
-  // front, rather than after an upload fails with an opaque SDK error.
+  // uploadsConfigured lets the admin page warn up front rather than after an
+  // upload fails with an opaque SDK error. Listing works over OIDC, so it is
+  // reported separately from the ability to mint client tokens.
   return NextResponse.json({
     builds: await getBuilds(),
-    blobConfigured: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+    uploadsConfigured: canIssueClientTokens(),
   });
 }
 
