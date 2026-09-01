@@ -26,7 +26,6 @@ export default async function Home() {
         <Experience />
         <Differentiation />
         <Prototype build={build} />
-        <Market />
         <Business />
         <Roadmap />
         <Founder />
@@ -119,20 +118,18 @@ function DownloadButton({
   build: BuildInfoProp;
   className?: string;
 }) {
+  // No build uploaded yet: show an inert placeholder rather than sending the
+  // visitor somewhere else.
   if (!build) {
     return (
-      <a
-        href={ITCH_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      <span
         className={
-          "inline-flex items-center gap-2 rounded-lg bg-blood px-6 py-3.5 text-sm font-semibold text-white transition hover:brightness-110 " +
+          "inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-edge px-6 py-3.5 text-sm font-semibold text-dim " +
           className
         }
       >
-        Play the prototype
-        <span aria-hidden="true">&rarr;</span>
-      </a>
+        Build coming soon
+      </span>
     );
   }
 
@@ -170,7 +167,7 @@ function Nav() {
   const links = [
     ["Product", "product"],
     ["Prototype", "prototype"],
-    ["Market", "market"],
+    ["Business", "business"],
     ["Roadmap", "roadmap"],
   ] as const;
 
@@ -515,76 +512,11 @@ function Prototype({ build }: { build: BuildInfoProp }) {
   );
 }
 
-function Market() {
-  const stats = [
-    ["$201.6B", "Global games revenue in 2025."],
-    ["$43.6B", "PC games revenue in 2025; PC grew 12% YoY."],
-    ["555M", "Gamers in India, per Lumikai's 2025 report."],
-  ] as const;
-
-  return (
-    <Section
-      id="market"
-      index="05"
-      label="Target audience"
-      title="Large market. Focused audience."
-      lead="Black Circle targets players who already buy and play premium action and open-world games."
-    >
-      <div className="grid gap-4 md:grid-cols-3">
-        {stats.map(([value, caption]) => (
-          <div
-            key={value}
-            className="rounded-xl border border-edge bg-surface p-6"
-          >
-            <p className="text-3xl font-bold tracking-tight tabular-nums">
-              {value}
-            </p>
-            <p className="mt-2.5 text-sm leading-relaxed text-ash">{caption}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-edge bg-surface p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blood">
-            Market growth
-          </p>
-          <p className="mt-3 text-3xl font-bold tabular-nums text-ember">5.1%</p>
-          <p className="mt-2 text-sm text-ash">
-            Global video game market CAGR, 2026&ndash;2033.
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-edge bg-surface p-6 md:col-span-2">
-          <p className="text-sm font-semibold">
-            Primary: 18&ndash;35 PC and console players
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-ash">
-            Players who enjoy crime, action, open-world exploration and
-            story-led games.
-          </p>
-          <p className="mt-5 text-sm font-semibold">Secondary</p>
-          <p className="mt-2 text-sm leading-relaxed text-ash">
-            Players seeking a smaller-scale alternative to AAA open-world crime
-            franchises &mdash; with a stronger emphasis on story and
-            player-driven police pressure.
-          </p>
-        </div>
-      </div>
-
-      <p className="mt-8 text-xs leading-relaxed text-dim">
-        Sources: Newzoo (Global Games Market 2025); Grand View Research (Video
-        Game Market 2026&ndash;2033); Lumikai State of Interactive Media 2025.
-      </p>
-    </Section>
-  );
-}
-
 function Business() {
   return (
     <Section
       id="business"
-      index="06"
+      index="05"
       label="Business & monetization"
       title="A premium product with optional long-tail content"
       lead="Monetization is designed to keep the core game simple and value-led."
@@ -646,7 +578,7 @@ function Roadmap() {
   return (
     <Section
       id="roadmap"
-      index="07"
+      index="06"
       label="Development roadmap"
       title="From playable prototype to full production"
       lead="The next phase is about turning a working foundation into a focused production pipeline."
@@ -694,7 +626,7 @@ function Founder() {
   return (
     <Section
       id="founder"
-      index="08"
+      index="07"
       label="Founder"
       title="Built solo, from concept to playable prototype."
       lead="Black Circle is designed, programmed and directed by one developer."

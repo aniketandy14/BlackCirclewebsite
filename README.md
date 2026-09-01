@@ -17,8 +17,10 @@ Live prototype: https://aniketandy14.itch.io/black-circle
 | `/api/builds`      | Lists and deletes builds (admin only)                       |
 
 The download button always points at `/api/download`. That route resolves the
-most recently uploaded zip in Vercel Blob at request time, so the link never
-goes stale. If no build has been uploaded, it falls back to the itch.io page.
+most recently uploaded zip in Vercel Blob at request time and serves it as a
+file download, so the link never goes stale. Until a build is uploaded the
+button is inert and reads "Build coming soon" — it never sends visitors
+elsewhere.
 
 ## Setting up the download (one time)
 
@@ -64,7 +66,7 @@ Then open http://localhost:3000.
 For the admin page to work locally, copy `.env.example` to `.env.local` and
 fill in both values. You can pull the real Blob token with
 `npx vercel env pull .env.local` once the project is linked. Without them the
-site still runs — the download button just falls back to itch.io.
+site still runs — the download button just shows its "Build coming soon" state.
 
 ## Structure
 
