@@ -38,6 +38,14 @@ function toBuildInfo(blob: {
  * (BLOB_STORE_ID + VERCEL_OIDC_TOKEN). Minting a client token for a browser
  * upload is the one operation that needs the long-lived read-write token.
  */
+/**
+ * Private stores serve from *.private.blob.vercel-storage.com and reject
+ * anonymous reads, so their URLs have to be signed before being handed out.
+ */
+export function isPrivateBlobUrl(url: string): boolean {
+  return new URL(url).hostname.endsWith(".private.blob.vercel-storage.com");
+}
+
 export function canIssueClientTokens(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
