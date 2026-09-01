@@ -23,7 +23,9 @@ function toBuildInfo(blob: {
     url: blob.url,
     downloadUrl: blob.downloadUrl,
     pathname: blob.pathname,
-    filename: blob.pathname.slice(BUILD_PREFIX.length) || "black-circle.zip",
+    // Works for builds/foo.zip and for a foo.zip dropped at the store root by
+    // the Vercel dashboard uploader.
+    filename: blob.pathname.split("/").pop() || "black-circle.zip",
     size: blob.size,
     uploadedAt: blob.uploadedAt.toISOString(),
   };
@@ -48,8 +50,19 @@ export function canIssueClientTokens(): boolean {
  */
 export async function getBuilds(): Promise<BuildInfo[]> {
   try {
-    const { blobs } = await list({ prefix: BUILD_PREFIX });
-    return blobs
+    const { blobs } = await list();
+    const zips = blobs.filter((blob) =>
+      blob.pathname.toLowerCase().endsWith(".zip"),
+    );
+
+    // Uploads from /admin land under builds/. A zip added by hand through the
+    // Vercel dashboard can land anywhere, so fall back to any zip in the store
+    // when the prefix is empty.
+    const underPrefix = zips.filter((blob) =>
+      blob.pathname.startsWith(BUILD_PREFIX),
+    );
+
+    return (underPrefix.length > 0 ? underPrefix : zips)
       .map(toBuildInfo)
       .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
   } catch {
