@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { formatBytes, formatDate, getLatestBuild } from "@/lib/blob";
 
-const YOUTUBE_ID = "YHYQ45dUZjo";
+const YOUTUBE_ID = "1OiHS3pPyB0";
 
 // The download panel reflects whatever is in the Blob store, so the page is
 // re-rendered on a short interval rather than frozen at build time.
