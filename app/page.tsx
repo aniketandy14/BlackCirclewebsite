@@ -617,6 +617,17 @@ function Founder() {
             <p className="mt-1 text-sm text-blood">
               Founder / Developer &mdash; solo
             </p>
+            <div className="mt-4 flex flex-col gap-2 text-sm text-ash">
+              <a href="tel:+919380120878" className="transition hover:text-chalk">
+                +91 9380120878
+              </a>
+              <a
+                href="mailto:aniketrshintre@gmail.com"
+                className="break-all transition hover:text-chalk"
+              >
+                aniketrshintre@gmail.com
+              </a>
+            </div>
           </div>
         </div>
 
